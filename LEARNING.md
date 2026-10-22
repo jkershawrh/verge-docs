@@ -308,3 +308,21 @@ recommends it to a human.
 
 The cross-component wiring (Loop 5) is the Phase 5 SaaS-ification work.
 The meta-learning (Loop 6) emerges naturally once Loop 5 is complete.
+
+## Implementation status (updated)
+
+| Loop | Status | Module |
+|---|---|---|
+| 1. Signal (Cascade) | ✅ Built, deployed | `cascade-compression` |
+| 2. Capability (VERGE) | ✅ Built, 927+ tests | `verge` |
+| 3. Model (eval-cards) | ✅ Built, deployed | `eval-cards` |
+| 4. Trust (EAK) | ✅ Built, tested | `earned-authority-kit` |
+| 5. Cross-component | ✅ Wired (FeedbackCollector + EventPublisher) | `verge.feedback` + `verge.kafka_publisher` |
+| 6. Meta-learning | 🔶 Emerges from Loop 5 | SDAVL + VEF |
+
+Loop 5 is now fully wired: `FeedbackCollector.record_execution()` →
+`drain()` → `EventPublisher.publish()` → Kafka topics. The feedback flows:
+- `cascade_feedback(task_type)` → Cascade memory (Loop 1)
+- `model_feedback(model)` → eval-cards qualification (Loop 3)
+- `model_ranking()` → SDAVL capability selection (Loop 6)
+- `value_feedback(tenant)` → VEF value measurement
